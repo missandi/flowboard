@@ -25,6 +25,15 @@ const VIDEO_QUALITY_LABELS: Record<string, string> = {
   lite: "Lite",
   fast: "Fast",
   quality: "Quality",
+  lite_relaxed: "Lite (Low Priority)",
+  // Omni Flash dispatches stamp the per-duration model key directly
+  // (resolve_omni_flash_model: abra_r2v_4s / 6s / 8s / 10s). Map all
+  // four to a single "Omni Flash · Ns" label so the detail panel
+  // surfaces the actual duration variant that ran.
+  abra_r2v_4s: "Omni Flash · 4s",
+  abra_r2v_6s: "Omni Flash · 6s",
+  abra_r2v_8s: "Omni Flash · 8s",
+  abra_r2v_10s: "Omni Flash · 10s",
 };
 
 /** Format Flow's aspect-ratio enum to the human label shown on the node

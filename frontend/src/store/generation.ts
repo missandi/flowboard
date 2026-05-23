@@ -365,10 +365,23 @@ export const useGenerationStore = create<GenerationState>((set, get) => ({
               req.type === "gen_image"
                 ? (req.params["image_model"] as string | undefined)
                 : undefined;
-            const stampedVideoQuality =
-              req.type === "gen_video"
-                ? (req.params["video_quality"] as string | undefined)
-                : undefined;
+            // For Veo (`gen_video`) the dispatched `video_quality` IS the
+            // model selector (lite / fast / quality / lite_relaxed). For
+            // Omni Flash (`gen_video_omni`) the model is duration-scoped —
+            // derive the Flow model key (abra_r2v_<N>s) from the dispatched
+            // duration so the detail panel can surface the exact variant
+            // that ran (mirrors backend's resolve_omni_flash_model).
+            let stampedVideoQuality: string | undefined;
+            if (req.type === "gen_video") {
+              stampedVideoQuality = req.params["video_quality"] as
+                | string
+                | undefined;
+            } else if (req.type === "gen_video_omni") {
+              const d = req.params["duration_s"] as number | undefined;
+              if (d === 4 || d === 6 || d === 8 || d === 10) {
+                stampedVideoQuality = `abra_r2v_${d}s`;
+              }
+            }
             useBoardStore.getState().updateNodeData(rfId, {
               status: "done",
               mediaId,
