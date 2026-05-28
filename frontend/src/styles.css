@@ -1,4 +1,5 @@
 :root {
+  --radius-md: 6px;
   color-scheme: dark;
   --bg: #0b0c10;
   --panel: #14161c;
@@ -106,7 +107,7 @@ button:disabled {
   font-size: 12px;
   background: var(--panel-high);
   border: 1px dashed var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--muted);
   cursor: pointer;
   text-align: left;
@@ -135,7 +136,7 @@ button:disabled {
   font-size: 13px;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--muted);
   cursor: pointer;
   transition: background 80ms ease, color 80ms ease, border-color 80ms ease;
@@ -193,7 +194,7 @@ button:disabled {
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 0 4px 0 0;
 }
 .project-sidebar__item:hover {
@@ -253,7 +254,7 @@ button:disabled {
   z-index: 60;
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -309,7 +310,7 @@ button:disabled {
   width: min(92vw, 420px);
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 22px 22px 18px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
   display: flex;
@@ -342,7 +343,7 @@ button:disabled {
   font-size: 13px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--text);
   outline: none;
 }
@@ -363,7 +364,7 @@ button:disabled {
   padding: 7px 16px;
   font-size: 12px;
   font-weight: 500;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--panel-high);
   color: var(--text);
@@ -425,7 +426,7 @@ button:disabled {
   align-items: center;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 6px 10px;
   font-size: 12px;
   color: var(--muted);
@@ -551,7 +552,7 @@ button:disabled {
   padding: 6px 8px;
   background: rgba(255, 170, 0, 0.08);
   border: 1px solid rgba(255, 170, 0, 0.35);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 .account-panel__scan-hint-title {
   font-size: 11px;
@@ -638,7 +639,7 @@ button:disabled {
   justify-content: center;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   color: var(--text);
   cursor: pointer;
   font-size: 13px;
@@ -739,7 +740,7 @@ button:disabled {
   padding: 8px 10px;
   border: 1px solid #f59e0b;
   background: rgba(245, 158, 11, 0.10);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 11px;
   line-height: 1.35;
 }
@@ -801,7 +802,7 @@ button:disabled {
   overflow-y: auto;
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   padding: 0;
   font-size: 12px;
@@ -859,7 +860,7 @@ button:disabled {
   font-size: 13px;
   font-weight: 500;
   border: 1px solid rgba(239, 68, 68, 0.5);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: rgba(239, 68, 68, 0.08);
   color: #fca5a5;
   cursor: pointer;
@@ -929,7 +930,7 @@ button:disabled {
   gap: 10px;
   padding: 8px 10px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   background: var(--panel);
   transition: border-color 0.12s, background 0.12s;
@@ -1021,7 +1022,7 @@ button:disabled {
   padding: 2px 8px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--text);
 }
 
@@ -1105,7 +1106,7 @@ button:disabled {
   background: none;
   border: none;
   padding: 4px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
 }
 
@@ -1118,7 +1119,7 @@ button:disabled {
   color: var(--text);
   background: var(--panel-high);
   border: 1px solid var(--accent);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 3px 6px;
   outline: none;
   width: 160px;
@@ -1137,7 +1138,7 @@ button:disabled {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 15px;
   color: var(--muted);
   background: none;
@@ -1202,7 +1203,7 @@ button:disabled {
   width: 240px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 12px 12px 12px 18px;
   color: var(--text);
   transition: transform 80ms ease, box-shadow 80ms ease;
@@ -1331,7 +1332,7 @@ button:disabled {
   flex-direction: column;
   gap: 4px;
   padding: 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--panel-higher);
   border: 1px solid var(--border);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
@@ -1348,7 +1349,7 @@ button:disabled {
   gap: 8px;
   padding: 6px 10px;
   font-size: 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: var(--panel-high);
   color: var(--text);
@@ -1431,7 +1432,7 @@ button:disabled {
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 6px;
   border: 1px dashed transparent;
   transition: border-color 80ms linear, background-color 80ms linear;
@@ -1468,7 +1469,7 @@ button:disabled {
   font-size: 18px;
   color: var(--accent);
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .character-drop__error {
@@ -1531,7 +1532,7 @@ button:disabled {
   flex: 1;
   min-height: 96px;
   border: 1px dashed var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
   transition: border-color 80ms linear, background-color 80ms linear;
 }
@@ -1629,7 +1630,7 @@ button:disabled {
      48px before, which made image tiles ~half the height of video
      tiles in a 2x2 grid at the same card width. */
   aspect-ratio: 16 / 9;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--panel-high), var(--panel-higher));
   border: 1px solid var(--border);
   overflow: hidden;
@@ -1738,7 +1739,7 @@ button:disabled {
   padding: 8px 10px;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1763,7 +1764,7 @@ button:disabled {
   border: 1px solid var(--border);
   color: var(--text);
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   cursor: pointer;
   display: flex;
@@ -1899,7 +1900,7 @@ button:disabled {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -1931,7 +1932,7 @@ button:disabled {
   justify-content: center;
   height: 64px;
   border: 1px dashed var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
 }
 
@@ -2006,7 +2007,7 @@ button:disabled {
   display: flex;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   max-height: 240px;
 }
@@ -2039,7 +2040,7 @@ button:disabled {
 .visual-asset__refine-panel {
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -2097,7 +2098,7 @@ button:disabled {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--panel-high), var(--panel-higher));
   border: 1px solid var(--border);
   display: flex;
@@ -2124,7 +2125,7 @@ button:disabled {
 
 .video-tile {
   position: relative;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   aspect-ratio: 16 / 9;
   background: var(--panel-high);
@@ -2157,7 +2158,7 @@ button:disabled {
   height: 100%;
   object-fit: cover;
   background: var(--panel-high);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   display: block;
 }
 
@@ -2169,7 +2170,7 @@ button:disabled {
   height: 100%;
   object-fit: cover;
   background: #000;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 /* Tiny play hint overlaid on the poster — signals that clicking
@@ -2251,7 +2252,7 @@ button:disabled {
   padding: 6px 8px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--text);
   outline: none;
   box-sizing: border-box;
@@ -2364,7 +2365,7 @@ button:disabled {
     ),
     var(--panel-higher);
   border: 1px solid rgba(197, 118, 255, 0.22);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   box-shadow:
     0 32px 80px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
@@ -2383,7 +2384,7 @@ button:disabled {
   justify-content: center;
   background: transparent;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: var(--muted);
   font-size: 18px;
   cursor: pointer;
@@ -2447,7 +2448,7 @@ button:disabled {
   padding: 18px 16px 16px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   text-decoration: none;
   color: var(--text);
   cursor: pointer;
@@ -2487,7 +2488,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 22px;
   margin-bottom: 12px;
   border: 1px solid var(--border);
@@ -2636,7 +2637,7 @@ button:disabled {
   padding: 4px 10px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--text);
 }
 
@@ -2644,7 +2645,7 @@ button:disabled {
   padding: 4px 10px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 11px;
   font-weight: 600;
   color: var(--muted);
@@ -2710,7 +2711,7 @@ button:disabled {
   max-width: 320px;
   min-width: 280px;
   background: var(--panel-higher);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border-left: 2px solid var(--error);
 }
 
@@ -2822,21 +2823,21 @@ button:disabled {
   font-size: 13px;
   line-height: 1.5;
   padding: 10px 12px;
-  border-radius: 12px 12px 4px 12px;
+  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
   max-width: 80%;
   word-break: break-word;
 }
 
 .chat-bubble--user {
   align-self: flex-end;
-  border-radius: 12px 12px 4px 12px;
+  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
   background: color-mix(in srgb, var(--accent) 15%, var(--panel-high));
   color: var(--text);
 }
 
 .chat-bubble--assistant {
   align-self: flex-start;
-  border-radius: 12px 12px 12px 4px;
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px;
   background: none;
   color: var(--text);
 }
@@ -2863,7 +2864,7 @@ button:disabled {
   min-height: 60px;
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 12px;
   color: var(--text);
   font-size: 13px;
@@ -2932,7 +2933,7 @@ button:disabled {
   z-index: 20;
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   max-height: 220px;
   overflow-y: auto;
 }
@@ -3045,7 +3046,7 @@ button:disabled {
 .gen-dialog {
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   width: 640px;
   max-width: calc(100vw - 32px);
   padding: 20px;
@@ -3144,7 +3145,7 @@ button:disabled {
   width: 100%;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 10px 12px;
   color: var(--text);
   font-size: 13px;
@@ -3182,7 +3183,7 @@ button:disabled {
    Storyboard composite and the motion prompt is forced to the template. */
 .gen-dialog__hint--locked {
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: rgba(120, 80, 200, 0.12);
   border: 1px solid rgba(120, 80, 200, 0.35);
   color: var(--text, #e5e7eb);
@@ -3196,7 +3197,7 @@ button:disabled {
   margin-left: 8px;
   font-size: 10px;
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: rgba(124, 92, 255, 0.15);
   color: var(--accent);
   font-weight: 500;
@@ -3209,7 +3210,7 @@ button:disabled {
   color: var(--muted);
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: color 120ms ease, border-color 120ms ease;
   border-left: 2px solid transparent;
@@ -3237,7 +3238,7 @@ button:disabled {
   color: var(--text);
   background-color: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border-left: 2px solid var(--accent);
   cursor: pointer;
   appearance: none;
@@ -3305,7 +3306,7 @@ button:disabled {
   justify-content: center;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   color: var(--muted);
 }
@@ -3369,7 +3370,7 @@ button:disabled {
   position: relative;
   background: var(--panel-higher);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   width: min(92vw, 1280px);
   height: min(88vh, 880px);
   display: flex;
@@ -3408,7 +3409,7 @@ button:disabled {
   min-height: 0;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3483,7 +3484,7 @@ button:disabled {
   justify-content: center;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   color: var(--muted);
   cursor: pointer;
@@ -3615,7 +3616,7 @@ button:disabled {
   justify-content: center;
   height: 34px;
   padding: 0 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 500;
   color: var(--text);
@@ -3682,7 +3683,7 @@ button:disabled {
   justify-content: center;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 16px;
   color: var(--muted);
   cursor: pointer;
@@ -3734,7 +3735,7 @@ button:disabled {
   outline: 1px dashed var(--accent);
   outline-offset: 2px;
   background: rgba(110, 168, 254, 0.08);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 .node-card__thumbnail {
   position: relative;
@@ -3784,7 +3785,7 @@ button:disabled {
   align-items: center;
   gap: 10px;
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
   font-size: 12px;
   color: var(--text);
@@ -3811,7 +3812,7 @@ button:disabled {
   position: relative;
   padding: 0;
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: none;
   cursor: pointer;
   flex-shrink: 0;
@@ -3877,7 +3878,7 @@ button:disabled {
   align-items: center;
   gap: 4px;
   padding: 4px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
   border: 1px solid var(--border);
   font-size: 11px;
@@ -3986,7 +3987,7 @@ button:disabled {
   z-index: 30;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 6px;
   display: grid;
   grid-template-columns: repeat(2, 56px);
@@ -3999,7 +4000,7 @@ button:disabled {
   height: 56px;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel);
   cursor: pointer;
   overflow: hidden;
@@ -4047,7 +4048,7 @@ button:disabled {
   align-self: flex-start;
   max-width: 80%;
   background: var(--panel-high);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -4125,7 +4126,7 @@ button:disabled {
 }
 .ai-providers-section__skeleton-row {
   height: 28px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: linear-gradient(90deg, var(--panel-high), var(--panel), var(--panel-high));
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
@@ -4140,7 +4141,7 @@ button:disabled {
 .ai-providers-section__error {
   padding: 8px 10px;
   border: 1px solid rgba(255, 90, 90, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: rgba(255, 90, 90, 0.08);
   color: #ffb0b0;
   font-size: 12px;
@@ -4169,7 +4170,7 @@ button:disabled {
   padding: 8px 10px;
   background: rgba(255, 170, 0, 0.16);
   border: 1px solid rgba(255, 170, 0, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: #ffc266;
   font-size: 11px;
 }
@@ -4202,7 +4203,7 @@ button:disabled {
   padding: 12px 36px 12px 12px; /* extra right padding leaves room for the radio */
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   text-align: left;
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
@@ -4296,7 +4297,7 @@ button:disabled {
   padding: 12px;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 .selection-panel__heading {
   font-size: 12px;
@@ -4318,7 +4319,7 @@ button:disabled {
   padding: 5px 12px;
   background: rgba(124, 92, 255, 0.18);
   border: 1px solid rgba(124, 92, 255, 0.4);
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   color: #c5b3ff;
   font-size: 11px;
   cursor: pointer;
@@ -4337,7 +4338,7 @@ button:disabled {
 .selection-panel__test-all-btn,
 .selection-panel__apply-btn {
   padding: 6px 16px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -4378,7 +4379,7 @@ button:disabled {
   padding: 8px 10px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 .feature-test-row--ok { border-color: rgba(80, 200, 120, 0.3); }
 .feature-test-row--fail { border-color: rgba(255, 90, 90, 0.4); }
@@ -4444,7 +4445,7 @@ button:disabled {
   padding: 8px 10px;
   background: rgba(124, 92, 255, 0.10);
   border: 1px solid rgba(124, 92, 255, 0.35);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: #c5b3ff;
   font-size: 11px;
   line-height: 1.4;
@@ -4466,7 +4467,7 @@ button:disabled {
   max-height: 80vh;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -4570,7 +4571,7 @@ button:disabled {
   background: rgba(124, 92, 255, 0.08);
   border-left: 2px solid rgba(124, 92, 255, 0.4);
   padding: 6px 10px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   font-size: 11px;
   color: var(--muted);
 }
@@ -4641,7 +4642,7 @@ button:disabled {
   gap: 5px;
   height: 28px;
   padding: 0 10px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   background: rgba(124, 92, 255, 0.10);
   border: 1px solid rgba(124, 92, 255, 0.30);
   color: #c5b3ff;
@@ -4717,7 +4718,7 @@ button:disabled {
   overflow-y: auto;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 20px 22px;
   display: flex;
   flex-direction: column;
@@ -4754,7 +4755,7 @@ button:disabled {
 .ai-provider-dialog__force-banner {
   background: rgba(255, 110, 90, 0.10);
   border: 1px solid rgba(255, 110, 90, 0.35);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 10px 12px;
   font-size: 12px;
   line-height: 1.5;
@@ -4918,7 +4919,7 @@ button:disabled {
   margin-bottom: 8px;
   background: rgba(124, 92, 255, 0.12);
   border: 1px solid rgba(124, 92, 255, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: #c5b3ff;
   font-size: 11px;
   width: 100%;
@@ -4947,7 +4948,7 @@ button:disabled {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: transparent;
   border: 1px solid transparent;
   color: var(--muted);
@@ -5002,7 +5003,7 @@ button:disabled {
   max-height: 60vh;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
   z-index: 800;
   display: flex;
@@ -5088,7 +5089,7 @@ button:disabled {
   flex-shrink: 0;
   width: 28px;
   height: 28px;
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5215,7 +5216,7 @@ button:disabled {
   overflow-y: auto;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
   padding: 20px;
   display: flex;
@@ -5247,7 +5248,7 @@ button:disabled {
   padding: 8px 10px;
   background: rgba(255, 90, 90, 0.08);
   border: 1px solid rgba(255, 90, 90, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: #ffb0b0;
   font-size: 11px;
 }
@@ -5294,7 +5295,7 @@ button:disabled {
 
 .activity-detail__section {
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
 }
 .activity-detail__section-toggle {
@@ -5380,7 +5381,7 @@ button:disabled {
   line-height: 1;
   font-weight: 600;
   letter-spacing: 0.04em;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: rgba(0, 0, 0, 0.7);
   color: #fff;
   pointer-events: none;
@@ -5444,7 +5445,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--panel-high);
   color: var(--muted);
   font-size: 14px;
@@ -5466,7 +5467,7 @@ button:disabled {
   padding: 6px 10px;
   background: var(--panel-high);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--text);
   font-size: 12px;
   outline: none;
@@ -5492,7 +5493,7 @@ button:disabled {
   color: var(--error);
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 .references-panel__list {
@@ -5526,7 +5527,7 @@ button:disabled {
   flex-shrink: 0;
   width: 64px;
   height: 64px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--panel-higher);
   border: 1px solid var(--border);
@@ -5601,7 +5602,7 @@ button:disabled {
   opacity: 0;
   transition: opacity 80ms ease;
   background: var(--panel-high);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 2px;
 }
 
