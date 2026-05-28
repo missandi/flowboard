@@ -688,6 +688,8 @@ export interface ActivityListItem {
   status: ActivityStatus | string;
   node_id: number | null;
   node_short_id: string | null;
+  params?: Record<string, any>;
+  result?: Record<string, any>;
   created_at: string;
   finished_at: string | null;
   duration_ms: number | null;
@@ -911,4 +913,35 @@ export function getFlowSyncStatus(): Promise<SyncStatusResponse> {
 
 export function syncBoardsUpToFlow(): Promise<SyncUpResponse> {
   return api<SyncUpResponse>("/api/flow/projects/sync-up", { method: "POST" });
+}
+
+// ── Local Settings & Explorer integration ────────────────────────────────────
+
+export interface LocalSettingsDTO {
+  auto_export: boolean;
+  output_dir: string;
+}
+
+export function getLocalSettings(): Promise<LocalSettingsDTO> {
+  return api<LocalSettingsDTO>("/api/settings/local");
+}
+
+export function saveLocalSettings(settings: LocalSettingsDTO): Promise<{ ok: boolean; settings: LocalSettingsDTO }> {
+  return api<{ ok: boolean; settings: LocalSettingsDTO }>("/api/settings/local", {
+    method: "POST",
+    body: JSON.stringify(settings),
+  });
+}
+
+export function openOutputFolder(): Promise<{ ok: boolean }> {
+  return api<{ ok: boolean }>("/api/settings/open-output", {
+    method: "POST",
+  });
+}
+
+export function revealFileInExplorer(mediaId: string): Promise<{ ok: boolean }> {
+  return api<{ ok: boolean }>("/api/settings/reveal-file", {
+    method: "POST",
+    body: JSON.stringify({ media_id: mediaId }),
+  });
 }

@@ -107,6 +107,8 @@ def list_activity(
             "status": r.status,
             "node_id": r.node_id,
             "node_short_id": short_ids.get(r.node_id) if r.node_id else None,
+            "params": r.params,
+            "result": r.result,
             "created_at": _utc_iso(r.created_at),
             "finished_at": _utc_iso(r.finished_at),
             "duration_ms": _duration_ms(r),

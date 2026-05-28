@@ -1472,10 +1472,7 @@ function NodeBody({ rfId, data }: { rfId: string; data: FlowboardNodeData }) {
   }
 }
 
-function downloadExt(type: string): string {
-  if (type === "video") return "mp4";
-  return "png";
-}
+
 
 export function NodeCard(props: NodeProps<FlowNode>) {
   const data = props.data;
@@ -1491,33 +1488,14 @@ export function NodeCard(props: NodeProps<FlowNode>) {
     useGenerationStore.getState().openGenerationDialog(props.id, data.prompt ?? "");
   }
 
-  function handleDownload(e: React.MouseEvent) {
+  function handleRevealFile(e: React.MouseEvent) {
     e.stopPropagation();
-    // Download every variant, not just the first. `mediaIds` is the full
-    // list — `mediaId` is just the active variant — so a 4-variant image
-    // node was previously losing 3 of its 4 outputs. Filter out null
-    // placeholders that the partial-batch path may leave in `mediaIds`.
-    const rawIds =
-      data.mediaIds && data.mediaIds.length > 0
-        ? data.mediaIds
-        : data.mediaId
-          ? [data.mediaId]
-          : [];
-    const ids = rawIds.filter((m): m is string => typeof m === "string" && m.length > 0);
-    if (ids.length === 0) return;
-    const safeTitle = (data.title || data.type).replace(/[^A-Za-z0-9_-]+/g, "_");
-    const ext = downloadExt(data.type);
-    // `<a download>` only honours the suggested filename when the resource
-    // is same-origin — `/media/<id>` *is* same-origin (proxied by FastAPI),
-    // so the title-based filename sticks.
-    ids.forEach((mid, i) => {
-      const a = document.createElement("a");
-      a.href = mediaUrl(mid);
-      const suffix = ids.length > 1 ? `-${i + 1}` : "";
-      a.download = `${safeTitle}-${data.shortId}${suffix}.${ext}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    if (!data.mediaId) return;
+    import("../api/client").then(({ revealFileInExplorer }) => {
+      revealFileInExplorer(data.mediaId!)
+        .catch((err) => {
+          alert("Failed to reveal file: " + err.message);
+        });
     });
   }
 
@@ -1545,12 +1523,12 @@ export function NodeCard(props: NodeProps<FlowNode>) {
           {downloadable && (
             <button
               className="node-header__btn"
-              onClick={handleDownload}
-              aria-label="Download media"
-              title="Download"
+              onClick={handleRevealFile}
+              aria-label="Show in Folder"
+              title="Reveal in Explorer"
               tabIndex={0}
             >
-              ⬇
+              📁
             </button>
           )}
           {isGenerable && (

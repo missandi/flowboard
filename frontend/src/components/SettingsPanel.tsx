@@ -98,6 +98,65 @@ export function SettingsPanel({ open, onClose, onLogout, logoutPending }: Settin
 
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const [localSettings, setLocalSettings] = useState<{ auto_export: boolean; output_dir: string }>({
+    auto_export: false,
+    output_dir: "",
+  });
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+
+  // Fetch local settings when panel opens
+  useEffect(() => {
+    if (!open) return;
+    import("../api/client").then(({ getLocalSettings }) => {
+      getLocalSettings()
+        .then((data) => {
+          setLocalSettings(data);
+          setSettingsError(null);
+        })
+        .catch((err) => {
+          console.error("Failed to load local settings", err);
+        });
+    });
+  }, [open]);
+
+  const saveSettings = (next: { auto_export: boolean; output_dir: string }) => {
+    import("../api/client").then(({ saveLocalSettings }) => {
+      saveLocalSettings(next)
+        .then((res) => {
+          setLocalSettings(res.settings);
+          setSettingsError(null);
+        })
+        .catch((err) => {
+          setSettingsError(err.message || "Failed to save settings");
+        });
+    });
+  };
+
+  const handleToggleAutoExport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextVal = e.target.checked;
+    setLocalSettings((prev) => {
+      const next = { ...prev, auto_export: nextVal };
+      saveSettings(next);
+      return next;
+    });
+  };
+
+  const handleOutputDirChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSettings((prev) => ({ ...prev, output_dir: e.target.value }));
+  };
+
+  const handleSaveSettings = () => {
+    saveSettings(localSettings);
+  };
+
+  const handleOpenOutputFolder = () => {
+    import("../api/client").then(({ openOutputFolder }) => {
+      openOutputFolder().catch((err) => {
+        alert("Failed to open folder: " + err.message);
+      });
+    });
+  };
+
   // Esc closes (click-outside is handled by the backdrop's onClick).
   useEffect(() => {
     if (!open) return;
@@ -254,6 +313,59 @@ export function SettingsPanel({ open, onClose, onLogout, logoutPending }: Settin
               </div>
             </label>
           ))}
+        </div>
+      </div>
+
+      <div className="settings-panel__section">
+        <div className="settings-panel__label">Auto-Export Settings</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <label className="settings-panel__radio" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={localSettings.auto_export}
+              onChange={handleToggleAutoExport}
+              style={{ accentColor: "var(--accent)", marginRight: "8px", width: "16px", height: "16px" }}
+            />
+            <div>
+              <div className="settings-panel__radio-label" style={{ fontWeight: 500 }}>
+                Auto-Export to Folder
+              </div>
+              <div className="settings-panel__radio-hint">
+                Automatically save rendered images and videos to your disk.
+              </div>
+            </div>
+          </label>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" }}>
+            <div className="settings-panel__radio-hint" style={{ fontSize: "11px", fontWeight: 500, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              Output Directory Path (Absolute)
+            </div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                type="text"
+                value={localSettings.output_dir}
+                onChange={handleOutputDirChange}
+                onBlur={handleSaveSettings}
+                placeholder="e.g. D:\RenderOutput"
+                className="toolbar-name-input"
+                style={{ flex: 1, height: "32px", fontSize: "12px", background: "var(--panel-high)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)" }}
+              />
+              <button
+                type="button"
+                onClick={handleOpenOutputFolder}
+                className="project-modal__btn"
+                style={{ height: "32px", padding: "0 12px", borderRadius: "var(--radius-md)", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+                title="Open Folder in File Explorer"
+              >
+                📁 Open Folder
+              </button>
+            </div>
+            {settingsError && (
+              <div style={{ color: "#ef4444", fontSize: "11px", marginTop: "2px" }}>
+                ⚠️ {settingsError}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

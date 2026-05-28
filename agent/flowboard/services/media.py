@@ -26,6 +26,55 @@ logger = logging.getLogger(__name__)
 MEDIA_CACHE_DIR = STORAGE_DIR / "media"
 MEDIA_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+
+def _copy_to_output_dir(media_id: str, local_path: Path) -> None:
+    """Helper to copy cached media file to the user-configured Output Directory."""
+    try:
+        import json
+        import shutil
+        from sqlmodel import select
+        from flowboard.db import get_session
+        from flowboard.db.models import Asset, Node
+
+        settings_file = STORAGE_DIR / "settings.json"
+        if not settings_file.exists():
+            return
+
+        settings = json.loads(settings_file.read_text(encoding="utf-8"))
+        if not settings.get("auto_export", False):
+            return
+
+        output_dir_str = settings.get("output_dir")
+        if not output_dir_str:
+            return
+
+        output_dir = Path(output_dir_str)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Find associated Node short_id
+        node_short_id = "media"
+        with get_session() as s:
+            asset = s.exec(
+                select(Asset).where(Asset.uuid_media_id == media_id)
+            ).first()
+            if asset and asset.node_id:
+                node = s.get(Node, asset.node_id)
+                if node:
+                    node_short_id = node.short_id
+
+        # Clean short_id for filename safety
+        node_short_id = "".join(c for c in node_short_id if c.isalnum() or c in ("-", "_")).strip()
+        if not node_short_id:
+            node_short_id = "media"
+
+        dest_name = f"{node_short_id}_{media_id}{local_path.suffix}"
+        dest_path = output_dir / dest_name
+        
+        shutil.copy2(local_path, dest_path)
+        logger.info(f"Auto-exported media {media_id} to output folder: {dest_path}")
+    except Exception as e:
+        logger.error(f"Failed to auto-export media {media_id}: {e}")
+
 # Media id is a hex-with-dashes UUID in the GCS path.
 _MEDIA_ID_RE = re.compile(r"^[0-9a-fA-F-]{1,64}$")
 
@@ -141,6 +190,7 @@ def ingest_inline_bytes(
             row.kind = kind
         s.add(row)
         s.commit()
+    _copy_to_output_dir(media_id, path)
     logger.info("media: ingested %d inline bytes for %s", len(data), media_id)
     return True
 
@@ -200,6 +250,7 @@ async def fetch_and_cache(media_id: str) -> Optional[tuple[bytes, str, Path]]:
             row.mime = mime
             s.add(row)
             s.commit()
+    _copy_to_output_dir(media_id, path)
 
     return resp.content, mime, path
 

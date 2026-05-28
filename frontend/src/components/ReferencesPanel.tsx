@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { mediaUrl, type ReferenceItem } from "../api/client";
+import { mediaUrl, type ReferenceItem, type ActivityListItem, patchNode } from "../api/client";
 import { useBoardStore } from "../store/board";
 import { filterReferences, useReferencesStore } from "../store/references";
+import { useGenerationStore } from "../store/generation";
 
 /**
  * Right-side collapsible reference library.
@@ -29,7 +30,32 @@ export function ReferencesPanel() {
   const rename = useReferencesStore((s) => s.rename);
   const togglePin = useReferencesStore((s) => s.togglePin);
 
+  const [activeTab, setActiveTab] = useState<"library" | "history">("library");
+  const [historyItems, setHistoryItems] = useState<ActivityListItem[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
   const filtered = useMemo(() => filterReferences(items, query), [items, query]);
+
+  const fetchHistory = () => {
+    if (!panelOpen || activeTab !== "history") return;
+    setHistoryLoading(true);
+    import("../api/client").then(({ getActivityList }) => {
+      getActivityList({ limit: 50, type: ["gen_image", "gen_video", "edit_image"] })
+        .then((res) => {
+          setHistoryItems(res.items || []);
+        })
+        .catch((err) => {
+          console.error("Failed to load history items", err);
+        })
+        .finally(() => {
+          setHistoryLoading(false);
+        });
+    });
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [panelOpen, activeTab]);
 
   return (
     <>
@@ -50,7 +76,7 @@ export function ReferencesPanel() {
       >
         <div className="references-panel__header">
           <span className="references-panel__title">
-            <span aria-hidden="true">★</span> Library
+            <span aria-hidden="true">★</span> Workspace
           </span>
           <button
             type="button"
@@ -63,45 +89,126 @@ export function ReferencesPanel() {
           </button>
         </div>
 
-        <div className="references-panel__search">
-          <input
-            type="text"
-            placeholder="🔍 search references…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search references"
-          />
+        {/* Tab switcher */}
+        <div className="references-panel__tabs" style={{ display: "flex", borderBottom: "1px solid var(--border)", background: "var(--panel)" }}>
+          <button
+            type="button"
+            className={`references-panel__tab ${activeTab === "library" ? "references-panel__tab--active" : ""}`}
+            style={{
+              flex: 1,
+              padding: "10px 4px",
+              fontSize: "11px",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
+              color: activeTab === "library" ? "var(--accent)" : "var(--muted)",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "library" ? "2px solid var(--accent)" : "2px solid transparent",
+              cursor: "pointer",
+              transition: "all 0.12s ease"
+            }}
+            onClick={() => setActiveTab("library")}
+          >
+            Library
+          </button>
+          <button
+            type="button"
+            className={`references-panel__tab ${activeTab === "history" ? "references-panel__tab--active" : ""}`}
+            style={{
+              flex: 1,
+              padding: "10px 4px",
+              fontSize: "11px",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
+              color: activeTab === "history" ? "var(--accent)" : "var(--muted)",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "history" ? "2px solid var(--accent)" : "2px solid transparent",
+              cursor: "pointer",
+              transition: "all 0.12s ease"
+            }}
+            onClick={() => setActiveTab("history")}
+          >
+            🕒 History
+          </button>
         </div>
 
-        {error && <div className="references-panel__error">{error}</div>}
+        {activeTab === "library" ? (
+          <>
+            <div className="references-panel__search">
+              <input
+                type="text"
+                placeholder="🔍 search references…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-label="Search references"
+              />
+            </div>
 
-        {loading && items.length === 0 && (
-          <div className="references-panel__empty">Loading…</div>
+            {error && <div className="references-panel__error">{error}</div>}
+
+            {loading && items.length === 0 && (
+              <div className="references-panel__empty">Loading…</div>
+            )}
+
+            {!loading && items.length === 0 && (
+              <div className="references-panel__empty">
+                Save a variant from any image node to start your library.
+              </div>
+            )}
+
+            {!loading && items.length > 0 && filtered.length === 0 && (
+              <div className="references-panel__empty">
+                No references match "{query}".
+              </div>
+            )}
+
+            <ul className="references-panel__list">
+              {filtered.map((ref) => (
+                <ReferenceCard
+                  key={ref.id}
+                  item={ref}
+                  onRename={(label) => rename(ref.id, label)}
+                  onTogglePin={() => togglePin(ref.id)}
+                  onDelete={() => remove(ref.id)}
+                />
+              ))}
+            </ul>
+          </>
+        ) : (
+          <>
+            <div className="references-panel__search" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 14px" }}>
+              <span style={{ fontSize: "10px", color: "var(--muted)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.04em" }}>Render Sessions</span>
+              <button
+                type="button"
+                onClick={fetchHistory}
+                disabled={historyLoading}
+                className="cli-reference__copy-btn"
+                style={{ padding: "2px 8px", borderRadius: "var(--radius-md)", fontSize: "10px" }}
+              >
+                {historyLoading ? "..." : "🔄 Refresh"}
+              </button>
+            </div>
+
+            {historyLoading && historyItems.length === 0 && (
+              <div className="references-panel__empty">Loading history…</div>
+            )}
+
+            {!historyLoading && historyItems.length === 0 && (
+              <div className="references-panel__empty">
+                No render history found for this board.
+              </div>
+            )}
+
+            <ul className="references-panel__list">
+              {historyItems.map((item) => (
+                <HistoryCard key={item.id} item={item} />
+              ))}
+            </ul>
+          </>
         )}
-
-        {!loading && items.length === 0 && (
-          <div className="references-panel__empty">
-            Save a variant from any image node to start your library.
-          </div>
-        )}
-
-        {!loading && items.length > 0 && filtered.length === 0 && (
-          <div className="references-panel__empty">
-            No references match "{query}".
-          </div>
-        )}
-
-        <ul className="references-panel__list">
-          {filtered.map((ref) => (
-            <ReferenceCard
-              key={ref.id}
-              item={ref}
-              onRename={(label) => rename(ref.id, label)}
-              onTogglePin={() => togglePin(ref.id)}
-              onDelete={() => remove(ref.id)}
-            />
-          ))}
-        </ul>
       </aside>
     </>
   );
@@ -338,6 +445,149 @@ function ReferenceCard({
         >
           {deleting ? "…" : confirmDelete ? "Confirm?" : "🗑"}
         </button>
+      </div>
+    </li>
+  );
+}
+
+interface HistoryCardProps {
+  item: ActivityListItem;
+}
+
+function HistoryCard({ item }: HistoryCardProps) {
+  const [thumbBroken, setThumbBroken] = useState(false);
+  const [restoring, setRestoring] = useState(false);
+
+  // Extract mediaId from result
+  const mediaIds: string[] = item.result?.media_ids || (item.result?.media_id ? [item.result.media_id] : []);
+  const mediaId = item.result?.media_id || mediaIds[0];
+
+  const hasMedia = !!mediaId && item.status === "done";
+  const promptText = item.params?.prompt || "";
+  const shortIdTag = item.node_short_id ? `#${item.node_short_id}` : `#${item.id}`;
+  
+  // Format dates
+  const formattedTime = useMemo(() => {
+    if (!item.created_at) return "";
+    try {
+      const d = new Date(item.created_at);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return "";
+    }
+  }, [item.created_at]);
+
+  async function handleApply() {
+    if (!item.node_id || !mediaId) return;
+    setRestoring(true);
+    try {
+      // 1. Update store
+      useBoardStore.getState().updateNodeData(String(item.node_id), {
+        mediaId,
+        mediaIds,
+        variantCount: mediaIds.length,
+        status: "done"
+      });
+
+      // 2. Patch database
+      await patchNode(item.node_id, {
+        status: "done",
+        data: {
+          mediaId,
+          mediaIds,
+          variantCount: mediaIds.length,
+          renderedAt: new Date().toISOString()
+        }
+      });
+    } catch (err) {
+      console.error("Failed to restore variant to canvas node", err);
+      alert("Failed to apply history variant to node");
+    } finally {
+      setRestoring(false);
+    }
+  }
+
+  function handleRegenerate(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!item.node_id) return;
+    useGenerationStore.getState().openGenerationDialog(String(item.node_id), promptText);
+  }
+
+  function handleViewLarge(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!item.node_id) return;
+    // Find visual variant index in node's mediaIds, defaults to 0
+    const varIdx = mediaIds.indexOf(mediaId);
+    useGenerationStore.getState().openResultViewer(String(item.node_id), varIdx >= 0 ? varIdx : 0);
+  }
+
+  const tooltip = `${promptText}\n\nStatus: ${item.status}\nTime: ${formattedTime}`;
+
+  return (
+    <li
+      className="reference-card"
+      style={{ opacity: item.status === "failed" ? 0.6 : 1 }}
+      title={tooltip}
+      onClick={(e) => {
+        if (hasMedia) handleViewLarge(e);
+      }}
+    >
+      <div className="reference-card__thumb" style={{ background: item.status === "failed" ? "rgba(239, 68, 68, 0.1)" : "var(--panel-higher)" }}>
+        {!hasMedia || thumbBroken ? (
+          <div className="reference-card__thumb-missing" style={{ fontSize: "14px" }} aria-hidden="true">
+            {item.status === "running" ? "⚙️" : item.status === "failed" ? "❌" : "📷"}
+          </div>
+        ) : (
+          <img
+            src={mediaUrl(mediaId)}
+            alt=""
+            onError={() => setThumbBroken(true)}
+            draggable={false}
+          />
+        )}
+      </div>
+
+      <div className="reference-card__body">
+        <span className="reference-card__label" style={{ fontStyle: !promptText ? "italic" : "normal", color: !promptText ? "var(--muted)" : "var(--text)" }}>
+          {promptText || (item.type === "gen_video" ? "Video Generation" : "Image Generation")}
+        </span>
+        <div style={{ display: "flex", gap: "6px", alignItems: "center", marginTop: "2px" }}>
+          <span className="reference-card__id">{shortIdTag}</span>
+          <span style={{ fontSize: "10px", color: "var(--muted)" }}>{formattedTime}</span>
+          {item.status === "running" && (
+            <span style={{ fontSize: "10px", color: "var(--accent)", fontWeight: 500 }}>Running…</span>
+          )}
+        </div>
+      </div>
+
+      <div className="reference-card__actions">
+        {hasMedia && (
+          <button
+            type="button"
+            className="reference-card__action-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleApply();
+            }}
+            disabled={restoring}
+            title="Apply this render back to node"
+            aria-label="Apply render"
+            style={{ color: "var(--success)" }}
+          >
+            {restoring ? "…" : "↩"}
+          </button>
+        )}
+        {item.node_id && (
+          <button
+            type="button"
+            className="reference-card__action-btn"
+            onClick={handleRegenerate}
+            title="Fill prompt & settings to regenerate"
+            aria-label="Regenerate"
+          >
+            🔁
+          </button>
+        )}
       </div>
     </li>
   );
