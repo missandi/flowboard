@@ -270,12 +270,12 @@ async def test_run_text_via_cli_when_codex_available(
     """Critical Windows fix: prompt is delivered via stdin (kwargs['input'])
     rather than ``-p <prompt>`` argv. Same ``.cmd`` shim rationale as
     claude_cli — cmd.exe re-parses argv for ``.cmd`` shims and mangles
-    long prompts. ``-p -`` argv signals stdin to codex."""
+    long prompts. Stdin sidesteps the parser entirely."""
     p = OpenAIProvider()
     _stub_resolve(monkeypatch)
     state = _stub_run(
         monkeypatch,
-        _route_dispatch(b'{"result": "hello text"}\n'),
+        _route_dispatch(b'{"type": "item.completed", "item": {"type": "agent_message", "text": "hello text"}}\n'),
     )
     out = await p.run("hi", system_prompt="be terse")
     assert out == "hello text"
@@ -287,11 +287,11 @@ async def test_run_text_via_cli_when_codex_available(
     assert len(dispatch_calls) == 1
     argv, kwargs = dispatch_calls[0]
     assert "exec" in argv
-    assert "-p" in argv and "-" in argv
+    assert "--json" in argv and "-" in argv
     # Prompt is on stdin, not in argv.
-    assert kwargs["input"] == b"hi"
+    assert b"hi" in kwargs["input"]
+    assert b"be terse" in kwargs["input"]
     assert "hi" not in argv
-    assert "--system" in argv
 
 
 @pytest.mark.asyncio
@@ -308,7 +308,7 @@ async def test_run_vision_via_cli_when_image_flag_resolved(
     _stub_resolve(monkeypatch)
     state = _stub_run(
         monkeypatch,
-        _route_dispatch(b'{"result": "described"}\n', image_flag="--image"),
+        _route_dispatch(b'{"type": "item.completed", "item": {"type": "agent_message", "text": "described"}}\n', image_flag="--image"),
     )
     # Stub httpx to assert it's never called.
     httpx_called = {"n": 0}
@@ -394,7 +394,7 @@ async def test_run_text_via_codex_text_only_works(
     _stub_resolve(monkeypatch)
     _stub_run(
         monkeypatch,
-        _route_dispatch(b'{"result": "text answer"}\n', image_flag=None),
+        _route_dispatch(b'{"type": "item.completed", "item": {"type": "agent_message", "text": "text answer"}}\n', image_flag=None),
     )
     out = await p.run("hi")
     assert out == "text answer"
@@ -432,31 +432,15 @@ async def test_run_raises_when_neither_cli_nor_key(tmp_secrets_path, monkeypatch
 
 
 @pytest.mark.asyncio
-async def test_cli_envelope_error_field_raises(tmp_secrets_path, monkeypatch):
+async def test_cli_envelope_missing_agent_message_raises(tmp_secrets_path, monkeypatch):
     p = OpenAIProvider()
     _stub_resolve(monkeypatch)
     _stub_run(
         monkeypatch,
-        _route_dispatch(b'{"is_error": true, "error": "auth required"}\n'),
+        _route_dispatch(b'{"type": "thread.started"}\n{"type": "turn.completed"}\n'),
     )
-    with pytest.raises(LLMError, match="codex CLI reported error"):
+    with pytest.raises(LLMError, match="returned no agent_message text in JSONL output"):
         await p.run("hi")
-
-
-@pytest.mark.asyncio
-async def test_cli_envelope_accepts_alternate_field_names(
-    tmp_secrets_path, monkeypatch
-):
-    """Codex CLI's output field name has shifted between versions — accept
-    `result`, `output_text`, or `text`."""
-    p = OpenAIProvider()
-    _stub_resolve(monkeypatch)
-    _stub_run(
-        monkeypatch,
-        _route_dispatch(b'{"output_text": "via output_text"}\n'),
-    )
-    out = await p.run("hi")
-    assert out == "via output_text"
 
 
 @pytest.mark.asyncio

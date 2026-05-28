@@ -235,8 +235,7 @@ class OpenAIProvider:
         attachments: Optional[list[str]],
         timeout: float,
     ) -> str:
-        """Spawn `codex exec --output-format json -p <prompt>` and parse
-        the JSON envelope (similar shape to `claude` CLI)."""
+        """Spawn `codex exec --json -` and parse the JSONL events."""
         import os
 
         # Validate inputs
@@ -254,19 +253,21 @@ class OpenAIProvider:
         # cmd.exe re-parses argv for ``.cmd``-shimmed binaries and
         # mangles newlines / quotes in long prompts. Stdin sidesteps the
         # parser entirely.
-        args: list[str] = [
-            codex_bin, "exec", "--output-format", "json", "-p", "-",
-        ]
-        if system_prompt:
-            args += ["--system", system_prompt]
+        args: list[str] = [codex_bin, "exec", "--json"]
         if attachments and self._cli_image_flag:
             for path in attachments:
                 args += [self._cli_image_flag, os.path.abspath(path)]
+        args.append("-")
+
+        # Prepends system prompt to the user prompt if present, as codex exec doesn't have a direct --system flag
+        full_prompt = user_prompt
+        if system_prompt:
+            full_prompt = f"System Instructions:\n{system_prompt}\n\nUser Request:\n{user_prompt}"
 
         try:
             result = subprocess.run(
                 args,
-                input=user_prompt.encode("utf-8"),
+                input=full_prompt.encode("utf-8"),
                 capture_output=True,
                 timeout=timeout,
             )
@@ -282,29 +283,29 @@ class OpenAIProvider:
             raise LLMError(f"codex CLI exited {result.returncode}: {stderr}")
 
         stdout = result.stdout.decode(errors="replace")
-        try:
-            envelope = json.loads(stdout)
-        except json.JSONDecodeError as exc:
-            raise LLMError(
-                f"codex CLI returned non-JSON output: {stdout[:200]}"
-            ) from exc
+        lines = stdout.strip().splitlines()
 
-        if not isinstance(envelope, dict):
-            raise LLMError("codex CLI envelope is not an object")
+        result_text = None
+        for line in lines:
+            if not line.strip():
+                continue
+            try:
+                event = json.loads(line)
+                if event.get("type") == "item.completed":
+                    item = event.get("item")
+                    if isinstance(item, dict) and item.get("type") == "agent_message":
+                        text = item.get("text")
+                        if isinstance(text, str):
+                            result_text = text
+            except json.JSONDecodeError:
+                continue
 
-        # Codex envelope shape mirrors Claude CLI: {result: "..."} or
-        # {is_error: true, ...}. Tolerate both `result` and `output_text`
-        # since the exact field name has shifted across CLI versions.
-        if envelope.get("is_error") or envelope.get("error"):
-            raise LLMError(
-                f"codex CLI reported error: "
-                f"{envelope.get('error') or envelope.get('result') or 'unknown'}"
-            )
-        for key in ("result", "output_text", "text"):
-            val = envelope.get(key)
-            if isinstance(val, str):
-                return val
-        raise LLMError(f"codex CLI envelope missing string output: {envelope!r:.200}")
+        if result_text is not None:
+            return result_text
+
+        raise LLMError(
+            f"codex CLI completed successfully but returned no agent_message text in JSONL output. Output: {stdout[:400]}"
+        )
 
     # ── API dispatch ─────────────────────────────────────────────────
 
